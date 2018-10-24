@@ -1,3 +1,3 @@
 # codenamize-js
 
-Port of https://github.com/jjmontesl/codenamize/blob/master/codenamize/codenamize.py into JavaScript
+Port of https://github.com/jjmontesl/codenamize into JavaScript
