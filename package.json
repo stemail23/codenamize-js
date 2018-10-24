@@ -8,5 +8,8 @@
 		"Steven Barlow <stemail23@gmail.com>"
 	],
 	"license": "MIT",
-	"private": false
+	"private": false,
+	"dependencies": {
+		"big-integer": "^1.6.36"
+	}
 }
