@@ -1,6 +1,6 @@
 # Codenameize Version History
 
-## Next
+## 1.0.1 (25 Oct 2018)
 
 - JSON.stringify objects (and arrays) when used as seed values.
 - Remove inadvertently npm published Python Codenamize library subfolder. Oops!
