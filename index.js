@@ -21,25 +21,25 @@ const adjectiveLengths = findLengths(adjectives);
 nouns.sort((a, b) => a.length === b.length ? a.localeCompare(b) : a.length - b.length);
 const nounLengths = findLengths(nouns);
 
-function codenameParticles(seed, adjectiveCount, maxItemChars, hashAlgorithm) {
-    // Minimum length of 3 is required
-    maxItemChars = maxItemChars > 0 ? Math.max(3, maxItemChars) : 0;
-    if (maxItemChars > 9) { maxItemChars = 0; }
+function codenameParticles(options) {
+	if (!options || typeof options !== 'object') {
+		options = {};
+	}
+	options.maxItemChars = options.maxItemChars > 0 ? Math.max(3, options.maxItemChars) : 0;
+	if (options.maxItemChars > 9) { options.maxItemChars = 0; }
+	options.adjectiveCount = options.adjectiveCount || 1;
+	options.seed = (options.seed || '').toString();
+	options.hashAlgorithm = options.hashAlgorithm || 'md5';
 
-    // Prepare codename word lists and calculate size of codename space
-    const useNouns = maxItemChars > 0 ? nouns.slice(0, nounLengths[maxItemChars]) : nouns;
-    const useAdjectives = maxItemChars > 0 ? adjectives.slice(0, adjectiveLengths[maxItemChars]) : adjectives;
+	// Prepare codename word lists and calculate size of codename space
+	const useNouns = options.maxItemChars > 0 ? nouns.slice(0, nounLengths[options.maxItemChars]) : nouns;
+	const useAdjectives = options.maxItemChars > 0 ? adjectives.slice(0, adjectiveLengths[options.maxItemChars]) : adjectives;
 	const particles = [useNouns];
-	for (let i = 0; i < adjectiveCount; i++) { particles.push(useAdjectives); }
+	for (let i = 0; i < options.adjectiveCount; i++) { particles.push(useAdjectives); }
+	const totalWords = bigInt(useAdjectives.length).pow(options.adjectiveCount).multiply(bigInt(useNouns.length));
 
-	const totalWords = bigInt(useAdjectives.length).pow(adjectiveCount).multiply(bigInt(useNouns.length));
-
-	// Convert seed to string
-	seed = (seed || '').toString();
-	hashAlgorithm = hashAlgorithm || 'md5';
-
-	const hash = crypto.createHash(hashAlgorithm);
-	hash.update(seed);
+	const hash = crypto.createHash(options.hashAlgorithm);
+	hash.update(options.seed);
 	const hashDigest = hash.digest('hex');
 	const objHash = bigInt(hashDigest, 16).multiply('36413321723440003717');
 
@@ -55,15 +55,19 @@ function codenameParticles(seed, adjectiveCount, maxItemChars, hashAlgorithm) {
 	return codenameParticles;
 }
 
-function codenamize(seed, adjectiveCount, maxItemChars, separator, capitalize, hashAlgorithm) {
-	let particles = codenameParticles(seed, adjectiveCount, maxItemChars, hashAlgorithm);
+function codenamize(options) {
+	if (!options || typeof options !== 'object') {
+		options = {};
+	}
+	options.separator = options.separator || '-';
 
-	separator = separator || '';
-	if (capitalize) {
+	let particles = codenameParticles(options);
+
+	if (options.capitalize) {
 		particles = particles.map(particle => particle.charAt(0).toUpperCase() + particle.substring(1));
 	}
 
-	return particles.join(separator);
+	return particles.join(options.separator);
 }
 
 module.exports = codenamize;
