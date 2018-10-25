@@ -4,7 +4,7 @@ const adjectives = require('./adjectives.json');
 const nouns = require('./nouns.json');
 
 function findLengths(items) {
-	const lengths = [3,4,5,6,7,8,9];
+	const lengths = [3, 4, 5, 6, 7, 8, 9];
 	const response = {};
 	items.forEach(function(item) {
 		lengths.forEach(function(length) {
@@ -16,9 +16,9 @@ function findLengths(items) {
 	return response;
 }
 
-adjectives.sort((a, b) => a.length === b.length ? a.localeCompare(b) : a.length - b.length);
+adjectives.sort((a, b) => (a.length === b.length ? a.localeCompare(b) : a.length - b.length));
 const adjectiveLengths = findLengths(adjectives);
-nouns.sort((a, b) => a.length === b.length ? a.localeCompare(b) : a.length - b.length);
+nouns.sort((a, b) => (a.length === b.length ? a.localeCompare(b) : a.length - b.length));
 const nounLengths = findLengths(nouns);
 
 function codenameParticles(options) {
@@ -26,7 +26,9 @@ function codenameParticles(options) {
 		options = {};
 	}
 	options.maxItemChars = options.maxItemChars > 0 ? Math.max(3, options.maxItemChars) : 0;
-	if (options.maxItemChars > 9) { options.maxItemChars = 0; }
+	if (options.maxItemChars > 9) {
+		options.maxItemChars = 0;
+	}
 	options.adjectiveCount = options.adjectiveCount || 1;
 	options.seed = (options.seed || '').toString();
 	options.hashAlgorithm = options.hashAlgorithm || 'md5';
@@ -35,8 +37,12 @@ function codenameParticles(options) {
 	const useNouns = options.maxItemChars > 0 ? nouns.slice(0, nounLengths[options.maxItemChars]) : nouns;
 	const useAdjectives = options.maxItemChars > 0 ? adjectives.slice(0, adjectiveLengths[options.maxItemChars]) : adjectives;
 	const particles = [useNouns];
-	for (let i = 0; i < options.adjectiveCount; i++) { particles.push(useAdjectives); }
-	const totalWords = bigInt(useAdjectives.length).pow(options.adjectiveCount).multiply(bigInt(useNouns.length));
+	for (let i = 0; i < options.adjectiveCount; i++) {
+		particles.push(useAdjectives);
+	}
+	const totalWords = bigInt(useAdjectives.length)
+		.pow(options.adjectiveCount)
+		.multiply(bigInt(useNouns.length));
 
 	const hash = crypto.createHash(options.hashAlgorithm);
 	hash.update(options.seed);
