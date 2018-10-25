@@ -1,5 +1,5 @@
 # Codenameize Version History
 
-## 0.0.0
+## 1.0.0
 
-- Initial development
+- Initial release with [Codenamize](https://github.com/jjmontesl/codenamize) equivalence.
