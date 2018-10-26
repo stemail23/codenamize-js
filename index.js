@@ -55,6 +55,10 @@ function parseOptions(options) {
 	response.hashAlgorithm = options && isString(options.hashAlgorithm) ? options.hashAlgorithm : 'md5';
 	response.separator = options && isString(options.separator) ? options.separator : '-';
 
+	if (options && options.capitalize === true) {
+		response.capitalize = options.capitalize;
+	}
+	
 	return response;
 }
 
