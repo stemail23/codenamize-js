@@ -1,87 +1,105 @@
 const crypto = require('crypto');
+const _ = require('underscore');
 const bigInt = require('big-integer');
-const adjectives = require('./adjectives.json');
-const nouns = require('./nouns.json');
+const allParticles = {};
 
-function findLengths(items) {
-	const lengths = [3, 4, 5, 6, 7, 8, 9];
-	const response = {};
-	items.forEach(function(item) {
-		lengths.forEach(function(length) {
-			if (item.length <= length) {
-				response[length] = response[length] ? response[length] + 1 : 1;
-			}
+function parseParticles(particles) {
+	function findLengths(items) {
+		const lengths = [3, 4, 5, 6, 7, 8, 9];
+		const response = {};
+		items.forEach(function(item) {
+			lengths.forEach(function(length) {
+				if (item.length <= length) {
+					response[length] = response[length] ? response[length] + 1 : 1;
+				}
+			});
 		});
+		return response;
+	}
+
+	_(particles).forEach(function(value, key) {
+		allParticles[key] = {
+			items: value.sort((a, b) => (a.length === b.length ? a.localeCompare(b) : a.length - b.length)),
+			metadata: {
+				lengths: findLengths(value)
+			}
+		};
 	});
-	return response;
+	return allParticles;
 }
-
-adjectives.sort((a, b) => (a.length === b.length ? a.localeCompare(b) : a.length - b.length));
-const adjectiveLengths = findLengths(adjectives);
-nouns.sort((a, b) => (a.length === b.length ? a.localeCompare(b) : a.length - b.length));
-const nounLengths = findLengths(nouns);
-
-function isObject(obj) {
-    return typeof obj === 'object' && !!obj;
-}
-
-function isString(obj) {
-	return Object.prototype.toString.call(obj) === '[object String]';
-}
-
-function isNumber(obj) {
-	return Object.prototype.toString.call(obj) === '[object Number]';
-}
+parseParticles(require('./particles'), allParticles);
 
 function parseOptions(options) {
+	if (options._isParsed) {
+		return options;
+	}
 	const response = {};
 
-	response.maxItemChars = options && isNumber(options.maxItemChars) && options.maxItemChars > 0 ? Math.max(3, options.maxItemChars) : 0;
+	response.maxItemChars = options && _.isNumber(options.maxItemChars) && options.maxItemChars > 0 ? Math.max(3, options.maxItemChars) : 0;
 	if (response.maxItemChars > 9 || !response.maxItemChars) {
 		delete response.maxItemChars;
 	}
-	response.adjectiveCount = options && isNumber(options.adjectiveCount) ? options.adjectiveCount : 0;
-	if (!response.adjectiveCount) {
-		delete response.adjectiveCount;
+	if (options && _.isArray(options.particles)) {
+		response.particles = Array.from(options.particles);
+	} else {
+		// classic mode
+		response.particles = options && _.isNumber(options.adjectiveCount) ? new Array(options.adjectiveCount).fill('adjective') : ['adjective'];
+		response.particles.push('noun');
 	}
 
 	response.seed = (options && options.seed) || '';
-	if (isNumber(response.seed)) {
+	if (_.isNumber(response.seed)) {
 		response.seed = response.seed.toString();
-	} else if (isObject(response.seed)) {
+	} else if (_.isObject(response.seed)) {
 		response.seed = JSON.stringify(response.seed);
 	}
 
-	response.hashAlgorithm = options && isString(options.hashAlgorithm) ? options.hashAlgorithm : 'md5';
-	response.separator = options && isString(options.separator) ? options.separator : '-';
+	response.hashAlgorithm = options && _.isString(options.hashAlgorithm) ? options.hashAlgorithm : 'md5';
+	response.separator = options && _.isString(options.separator) ? options.separator : '-';
 
 	if (options && options.capitalize === true) {
 		response.capitalize = options.capitalize;
 	}
-	
+
+	response._isParsed = true;
 	return response;
+}
+
+function getParticles(options) {
+	const useOptions = parseOptions(options);
+
+	const response = [];
+	useOptions.particles.reverse();
+	useOptions.particles.forEach(function(particle) {
+		response.push(useOptions.maxItemChars ? allParticles[particle].items.slice(0, allParticles[particle].metadata.lengths[useOptions.maxItemChars]) : allParticles[particle].items);
+	});
+	return response;
+}
+
+function getTotalWords(particles) {
+	let totalWords = bigInt(1);
+	particles.forEach(function(particle) {
+		totalWords = totalWords.multiply(bigInt(particle.length));
+	});
+	return totalWords;
+}
+
+function getHash(options) {
+	const useOptions = parseOptions(options);
+
+	const hash = crypto.createHash(useOptions.hashAlgorithm);
+	hash.update(useOptions.seed);
+	const hashDigest = hash.digest('hex');
+	return bigInt(hashDigest, 16).multiply('36413321723440003717');
 }
 
 function codenameParticles(options) {
 	const useOptions = parseOptions(options);
 
-	// Prepare codename word lists and calculate size of codename space
-	const useNouns = useOptions.maxItemChars ? nouns.slice(0, nounLengths[useOptions.maxItemChars]) : nouns;
-	const useAdjectives = useOptions.maxItemChars ? adjectives.slice(0, adjectiveLengths[useOptions.maxItemChars]) : adjectives;
-	const particles = [useNouns];
-	for (let i = 0; i < (useOptions.adjectiveCount || 1); i++) {
-		particles.push(useAdjectives);
-	}
-	const totalWords = bigInt(useAdjectives.length)
-		.pow(useOptions.adjectiveCount || 1)
-		.multiply(bigInt(useNouns.length));
+	const particles = getParticles(useOptions);
+	const totalWords = getTotalWords(particles);
+	const objHash = getHash(useOptions);
 
-	const hash = crypto.createHash(useOptions.hashAlgorithm);
-	hash.update(useOptions.seed);
-	const hashDigest = hash.digest('hex');
-	const objHash = bigInt(hashDigest, 16).multiply('36413321723440003717');
-
-	// Calculate codename words
 	let index = objHash.mod(totalWords);
 	const codenameParticles = [];
 	particles.forEach(function(particle) {
