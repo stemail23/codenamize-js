@@ -1,6 +1,6 @@
 {
 	"name": "codenamize",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"description": "Generate consistent easier-to-remember codenames from strings and numbers.",
 	"keywords": ["alias", "aliases", "anonymise", "anonymize", "code", "codename", "codenamise", "codenamize", "generator", "secret"],
 	"main": "index.js",
