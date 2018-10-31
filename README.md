@@ -10,16 +10,18 @@ This is a JavaScript port of the original Python [codenamize](https://github.com
 
 # Installation
 
-With [yarn](https://yarnpkg.com):
+Install from the [npm repository](https://www.npmjs.com/package/@codenamize/codenamize).
+
+With [yarn](https://yarnpkg.com)…
 
 ```shell
-$ yarn add codenamize
+$ yarn add @codenamize/codenamize
 ```
 
-With [npm](https://www.npmjs.com):
+… or with [npm](https://www.npmjs.com).
 
 ```shell
-$ npm install codenamize
+$ npm install @codenamize/codenamize
 ```
 
 # Usage
@@ -27,7 +29,7 @@ $ npm install codenamize
 ## Importing
 
 ```javascript
-const codenamize = require('codenamize');
+const codenamize = require('@codenamize/codenamize');
 ```
 
 ## Generating codenames
@@ -115,7 +117,7 @@ codenamize({ seed: '11:22:33:44:55:66', separator: ':' });
 
 Straight out of the box, **Codenamize** emulates the behaviour of the original [Python library](https://github.com/jjmontesl/codenamize), and contains the same noun and adjective lists. Generated codenames with either library should be identical for a given  input.
 
-Codenamize can be extended with extra word lists with the `use` function. The `use` function takes a single object argument with keys representing each category of word, and values being arrays of words corresponding to the category.
+**Codenamize** can be extended with extra word lists with the `use` function. The `use` function takes a single object argument with keys representing each category of word, and values being arrays of words corresponding to the category.
 
 ```javascript
 codenamize.use({ color: [ 'red', 'green', 'blue' ], animal: [ 'pig', 'dog', 'cat' ] });

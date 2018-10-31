@@ -1,5 +1,9 @@
 # Codenameize Version History
 
+## 1.1.1 (🎃 31 Oct 2018 🎃)
+
+- Move package to `@codenamize` scope.
+
 ## 1.1.0 (🎃 31 Oct 2018 🎃)
 
 - Allow codename output to be specified as a list of required word category particle types.
