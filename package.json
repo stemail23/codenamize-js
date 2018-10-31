@@ -4,10 +4,10 @@
 	"description": "Generate consistent easier-to-remember codenames from strings and numbers.",
 	"keywords": ["alias", "aliases", "anonymise", "anonymize", "code", "codename", "codenamise", "codenamize", "generator", "secret"],
 	"main": "index.js",
-	"homepage": "git@github.com:stemail23/codenamize-js.git",
+	"homepage": "https://github.com/stemail23/codenamize-js",
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:stemail23/codenamize-js.git"
+		"url": "https://github.com/stemail23/codenamize-js"
 	},
 	"contributors": [
 		{
