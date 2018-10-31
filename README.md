@@ -1,4 +1,4 @@
-# codenamize-js
+# Codenamize
 
 **Generate consistent easier-to-remember codenames from strings, numbers, or other seed inputs.**
 
