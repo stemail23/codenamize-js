@@ -4,7 +4,9 @@
 
 - Move package to `@codenamize` scope.
 
-## 1.1.0 (🎃 31 Oct 2018 🎃)
+## ~~1.1.0 (🎃 31 Oct 2018 🎃)~~
+
+**Deprecated. Use the `@codenamize` scoped v1.1.1 release instead.**
 
 - Allow codename output to be specified as a list of required word category particle types.
 - `use` function provided to allow codenamize vocabulary to be extended with alternative word lists.
