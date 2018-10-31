@@ -39,6 +39,12 @@ function parseOptions(options) {
 	}
 	const response = {};
 
+	if (_.isString(options) || _.isNumber(options)) {
+		options = {
+			seed: options
+		};
+	}
+
 	response.maxItemChars = options && _.isNumber(options.maxItemChars) && options.maxItemChars > 0 ? Math.max(3, options.maxItemChars) : 0;
 	if (response.maxItemChars > 9 || !response.maxItemChars) {
 		delete response.maxItemChars;
