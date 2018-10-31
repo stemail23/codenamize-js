@@ -17,14 +17,18 @@ function parseParticles(particles) {
 		return response;
 	}
 
-	_(particles).forEach(function(value, key) {
-		allParticles[key] = {
-			items: value.sort((a, b) => (a.length === b.length ? a.localeCompare(b) : a.length - b.length)),
-			metadata: {
-				lengths: findLengths(value)
-			}
-		};
-	});
+	if (_.isObject(particles) && !_.isArray(particles)) {
+		_(particles).forEach(function(value, key) {
+			const newValue = Array.from(value);
+			allParticles[key] = {
+				items: newValue.sort((a, b) => (a.length === b.length ? a.localeCompare(b) : a.length - b.length)),
+				metadata: {
+					lengths: findLengths(newValue)
+				}
+			};
+		});
+	}
+
 	return allParticles;
 }
 parseParticles(require('./particles'), allParticles);
@@ -71,7 +75,11 @@ function getParticles(options) {
 	const response = [];
 	useOptions.particles.reverse();
 	useOptions.particles.forEach(function(particle) {
-		response.push(useOptions.maxItemChars ? allParticles[particle].items.slice(0, allParticles[particle].metadata.lengths[useOptions.maxItemChars]) : allParticles[particle].items);
+		if (!allParticles[particle]) {
+			response.push(['unknown']);
+		} else {
+			response.push(useOptions.maxItemChars ? allParticles[particle].items.slice(0, allParticles[particle].metadata.lengths[useOptions.maxItemChars]) : allParticles[particle].items);
+		}
 	});
 	return response;
 }
@@ -122,5 +130,9 @@ function codenamize(options) {
 
 	return particles.join(useOptions.separator);
 }
+
+codenamize.use = function(particles) {
+	return parseParticles(particles, allParticles);
+};
 
 module.exports = codenamize;
