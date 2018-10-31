@@ -28,7 +28,6 @@ $ npm install codenamize
 
 ```javascript
 const codenamize = require('codenamize');
-
 ```
 
 ## Generating codenames
@@ -74,7 +73,7 @@ codenamize({ seed: '11:22:33:44:55:66', adjectiveCount: 3 });
 
 ### particles mode
 
-Instead of using `options.particles` argument can be used to specify a more precise composition for the produced codename. The argument is an array of word categories which will be appended together to produce the output codename.
+Instead of `options.adjectiveCount`, the `options.particles` argument can alternatively be used to specify a more precise composition for the produced codename. The argument is an array of word categories which will be appended together to produce the output codename.
 
 ```javascript
 > codenamize({ seed: '11:22:33:44:55:66', particles: ['adjective', 'noun'] });
@@ -114,7 +113,7 @@ codenamize({ seed: '11:22:33:44:55:66', separator: ':' });
 
 ## Extending the codename vocabulary
 
-Straight out of the box, codenamize emulates the behaviour of the original [Python library](https://github.com/jjmontesl/codenamize), and contains the same noun and adjective lists. Generated codenames with either library should be identical for a given  input.
+Straight out of the box, **Codenamize** emulates the behaviour of the original [Python library](https://github.com/jjmontesl/codenamize), and contains the same noun and adjective lists. Generated codenames with either library should be identical for a given  input.
 
 Codenamize can be extended with extra word lists with the `use` function. The `use` function takes a single object argument with keys representing each category of word, and values being arrays of words corresponding to the category.
 
@@ -125,10 +124,9 @@ codenamize({ seed: '11:22:33:44:55:66', particles: ['color', 'animal'] });
 // 'blue-pig'
 ```
 
-Note that in a real situation, a much more extensive list of words would likely be provide for each category of word.
+Note that in a real situation, a much more extensive list of words would likely be provide for each catagory of word.
 
 # Other versions
 
 * [Codenamize](https://github.com/jjmontesl/codenamize) - Python (the original!)
 * [Concode](https://github.com/DannyBen/concode) - Ruby
-
