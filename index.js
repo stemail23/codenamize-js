@@ -18,7 +18,7 @@ function parseParticles(particles) {
 	}
 
 	if (_.isObject(particles) && !_.isArray(particles)) {
-		_(particles).forEach(function(value, key) {
+		_.forEach(particles, function(value, key) {
 			const newValue = Array.from(value);
 			allParticles[key] = {
 				items: newValue.sort((a, b) => (a.length === b.length ? a.localeCompare(b) : a.length - b.length)),
